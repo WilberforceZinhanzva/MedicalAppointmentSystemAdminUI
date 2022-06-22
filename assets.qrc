@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/assets">
+        <file>fonts/worksans.ttf</file>
+        <file>fonts/MontserratAlternates-Light.ttf</file>
+    </qresource>
+</RCC>
