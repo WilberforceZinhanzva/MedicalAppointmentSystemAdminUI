@@ -3,6 +3,9 @@
 #include <QUrl>
 #include <QQmlContext>
 #include "authentication.h"
+#include "appointmentdatelistmodel.h"
+#include "appointmentdetailslistmodel.h"
+
 
 
 int main(int argc, char *argv[])
@@ -11,6 +14,8 @@ int main(int argc, char *argv[])
 
     qmlRegisterSingletonType(QUrl("qrc:/MedicalAppointmentsSystem/Theme.qml"),"Theming",1,0,"Theme");
 
+    qRegisterMetaType<AppointmentDetailsListModel*>();
+    qmlRegisterType<AppointmentDateListModel>("CustomModels",1,0,"AppointmentDateListModel");
     QQmlApplicationEngine engine;
 
     engine.rootContext()->setContextProperty("authentication", &Authentication::instance());

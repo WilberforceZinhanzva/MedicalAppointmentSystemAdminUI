@@ -18,6 +18,9 @@ public:
     const QString &token() const;
     void setToken(const QString &newToken);
 
+private slots:
+    void onLoginRequestFinished();
+
 signals:
     void authenticatedChanged();
 

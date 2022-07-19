@@ -6,8 +6,8 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 
-set(MedicalAppointmentsSystem_HEADERS authentication.h)
-set(MedicalAppointmentsSystem_SOURCES main.cpp authentication.cpp)
+set(MedicalAppointmentsSystem_HEADERS authentication.h networkmanager.h notificationmanager.h notificationmanager.h  appointmentdetailslistmodel.h appointmentdatelistmodel.h appointmentdate.h)
+set(MedicalAppointmentsSystem_SOURCES main.cpp authentication.cpp networkmanager.cpp notificationmanager.cpp appointmentdetailslistmodel.cpp appointmentdatelistmodel.cpp appointmentdate.cpp)
 set(MedicalAppointmentsSystem_RESOURCES assets.qrc)
 
 find_package(Qt6 6.3 COMPONENTS Quick REQUIRED)
@@ -23,7 +23,7 @@ qt_add_executable(appMedicalAppointmentsSystem
 qt_add_qml_module(appMedicalAppointmentsSystem
     URI MedicalAppointmentsSystem
     VERSION 1.0
-    QML_FILES main.qml Theme.qml LoginPage.qml ContentViewManager.qml NeuTextField.qml NeuButton.qml
+    QML_FILES main.qml Theme.qml LoginPage.qml ContentViewManager.qml NeuTextField.qml NeuButton.qml AccountMenuView.qml AccountCalendarView.qml MonthDateDelegate.qml
 )
 
 set_target_properties(appMedicalAppointmentsSystem PROPERTIES

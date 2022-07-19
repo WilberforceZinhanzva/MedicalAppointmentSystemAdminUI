@@ -1,4 +1,8 @@
 #include "authentication.h"
+#include "networkmanager.h"
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QNetworkReply>
 
 
 Authentication::Authentication()
@@ -42,6 +46,21 @@ void Authentication::setToken(const QString &newToken)
     emit tokenChanged();
 }
 
+void Authentication::onLoginRequestFinished()
+{
+    QNetworkReply *reply = qobject_cast<QNetworkReply*>(sender());
+    if(!reply->error() && reply->attribute(QNetworkRequest::HttpStatusCodeAttribute)==200){
+
+        this->setToken(reply->rawHeader("Authorization"));
+        this->setAuthenticated(true);
+
+        this->setName( QJsonDocument::fromJson(reply->readAll()).object().value("fullname").toString());
+    }else{
+        qDebug() << reply->errorString();
+    }
+    reply->deleteLater();
+}
+
 Authentication &Authentication::instance()
 {
     static Authentication authentication;
@@ -63,5 +82,16 @@ void Authentication::setAuthenticated(bool newAuthenticated)
 
 void Authentication::login(const QString &username, const QString &password)
 {
+    QString url = QString("%1/login").arg(NetworkManager::instance().baseUrl());
+    QNetworkRequest request(url);
+    request.setHeader(QNetworkRequest::ContentTypeHeader,"application/json");
+
+    QJsonObject object;
+    object.insert("username", QJsonValue(username));
+    object.insert("password", QJsonValue(password));
+
+    QNetworkReply *reply = NetworkManager::instance().post(request,QJsonDocument(object).toJson());
+    connect(reply, &QNetworkReply::finished,this,&Authentication::onLoginRequestFinished);
+
 
 }
