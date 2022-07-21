@@ -22,9 +22,14 @@ public:
     void changeModel(const QVector<AppointmentDate*>& appointmentDates);
 
     Q_INVOKABLE AppointmentDetailsListModel* extractAppointmentDetailsListModel(const int &index);
+    Q_INVOKABLE AppointmentDetailsListModel* extractAppointmentDetailsListModelByDate(const QDate &date);
     Q_INVOKABLE void fetchAppointments(const QString &key, const QString &value);
     int getExistingDateIndex(const QDate &date);
 
+
+signals:
+
+    void dateHasAppointments(const QDate& date);
 private slots:
     void onAppointmentsFetched();
 

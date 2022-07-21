@@ -43,6 +43,16 @@ AppointmentDetailsListModel *AppointmentDateListModel::extractAppointmentDetails
     return m_appointmentDates.at(index)->appointments();
 }
 
+AppointmentDetailsListModel *AppointmentDateListModel::extractAppointmentDetailsListModelByDate(const QDate &date)
+{
+    for(AppointmentDate* d: m_appointmentDates){
+        if(d->date().dayOfYear() == date.dayOfYear() && d->date().month() == date.month() && d->date().year() == date.year()){
+            return d->appointments();
+        }
+    }
+    return nullptr;
+}
+
 void AppointmentDateListModel::fetchAppointments(const QString &key, const QString &value)
 {
     QString url = QString("%1/api/v1/appointments?key=%2&searchValue=%3").arg(NetworkManager::instance().baseUrl()).arg(key).arg(value);
@@ -53,6 +63,7 @@ void AppointmentDateListModel::fetchAppointments(const QString &key, const QStri
     connect(reply, &QNetworkReply::finished,this,&AppointmentDateListModel::onAppointmentsFetched);
 
 }
+
 
 int AppointmentDateListModel::getExistingDateIndex(const QDate &date)
 {
@@ -116,12 +127,14 @@ void AppointmentDateListModel::onAppointmentsFetched()
                 appointmentDetails->patient = patient.value("fullname").toString();
                 appointmentDetails->appointmentType = appointmentType.value("name").toString();
                 appointmentDetails->appointmentStatus = appointmentObject.value("appointmentStatus").toString();
-                appointmentDetails->duration = evaluateDuration(appointmentTimeObject.value("duration").toInt());
+                appointmentDetails->duration = appointmentTimeObject.value("duration").toInt();
                 appointmentDetails->time = date.time();
+                appointmentDetails->endTime = appointmentDetails ->time.addSecs(appointmentTimeObject.value("duration").toInt() * 60);
                 appointmentDetails->isMorning = date.time() < QTime(12,00);
 
                 QVector<AppointmentDetails*> v;
                 v.push_back(appointmentDetails);
+                emit dateHasAppointments(appointmentDate->date());
                 appointmentDate->appointments()->setAppointmentDetails(v);
 
                 m_appointmentDates.push_back(appointmentDate);
@@ -137,8 +150,9 @@ void AppointmentDateListModel::onAppointmentsFetched()
                 appointmentDetails->patient = patient.value("fullname").toString();
                 appointmentDetails->appointmentType = appointmentType.value("name").toString();
                 appointmentDetails->appointmentStatus = appointmentObject.value("appointmentStatus").toString();
-                appointmentDetails->duration = evaluateDuration(appointmentTimeObject.value("duration").toInt());
+                appointmentDetails->duration = appointmentTimeObject.value("duration").toInt();
                 appointmentDetails->time = date.time();
+                appointmentDetails->endTime = appointmentDetails ->time.addSecs(appointmentTimeObject.value("duration").toInt() * 60);
                 appointmentDetails->isMorning = date.time() < QTime(12,00);
 
                 appointmentDate->appointments()->addAppointmentDetails(appointmentDetails);

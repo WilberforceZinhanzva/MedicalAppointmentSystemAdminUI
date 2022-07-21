@@ -17,13 +17,14 @@ QT6_ADD_RESOURCES(MedicalAppointmentsSystem_RESOURCES_RCC ${MedicalAppointmentsS
 qt_add_executable(appMedicalAppointmentsSystem
     ${MedicalAppointmentsSystem_HEADERS}
     ${MedicalAppointmentsSystem_SOURCES}
-    ${MedicalAppointmentsSystem_RESOURCES}
+    ${MedicalAppointmentsSystem_RESOURCES_RCC}
 )
 
 qt_add_qml_module(appMedicalAppointmentsSystem
     URI MedicalAppointmentsSystem
     VERSION 1.0
-    QML_FILES main.qml Theme.qml LoginPage.qml ContentViewManager.qml NeuTextField.qml NeuButton.qml AccountMenuView.qml AccountCalendarView.qml MonthDateDelegate.qml
+    QML_FILES main.qml Theme.qml LoginPage.qml ContentViewManager.qml NeuTextField.qml NeuButton.qml AccountMenuView.qml AccountCalendarView.qml MonthDateDelegate.qml AccountAppointmentsView.qml
+    AppointmentsDelegate.qml MenuButton.qml
 )
 
 set_target_properties(appMedicalAppointmentsSystem PROPERTIES

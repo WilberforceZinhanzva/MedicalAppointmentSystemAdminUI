@@ -10,8 +10,9 @@ struct AppointmentDetails{
     QString patient;
     QString appointmentType;
     QString appointmentStatus;
-    QString duration;
+    int duration;
     QTime time;
+    QTime endTime;
     bool isMorning;
     bool selected = false;
 };
@@ -21,7 +22,7 @@ class AppointmentDetailsListModel : public QAbstractListModel
     Q_OBJECT
 
     enum AppointmentDetailsRole{
-        PatientRole = Qt::UserRole + 1, AppointmentTypeRole, AppointmentStatusRole, DurationRole, SelectedRole, TimeRole, IsMorningRole
+        PatientRole = Qt::UserRole + 1, AppointmentTypeRole, AppointmentStatusRole, DurationRole, SelectedRole, TimeRole, IsMorningRole, EndTimeRole
     };
 
 public:

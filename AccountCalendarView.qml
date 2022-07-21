@@ -6,9 +6,43 @@ Item {
     id: root
     width: 350
 
-    property string selectedDayOfWeek: "Monday"
-    property string selectedDay: "24"
-    property string selectedMonth: "August"
+    property date today: new Date()
+    property string selectedDayOfWeek: evaluateDayOfWeek(today.getUTCDay())
+    property string selectedDay: today.getDate()
+    property string selectedMonth: evaluateMonth(today.getMonth())
+
+    signal dateHasAppointments(var date)
+    signal datePicked(var date)
+
+    function evaluateDayOfWeek(value){
+        switch(value){
+        case 0: return "Sunday"
+        case 1: return "Monday"
+        case 2: return "Tuesday"
+        case 3: return "Wednesday"
+        case 4: return "Thursday"
+        case 5: return "Friday"
+        case 6: return "Sartuday"
+        }
+    }
+
+    function evaluateMonth(value){
+        switch(value){
+        case 0: return "January"
+        case 1: return "February"
+        case 2: return "March"
+        case 3: return "April"
+        case 4: return "May"
+        case 5: return "June"
+        case 6: return "July"
+        case 7: return "August"
+        case 8: return "September"
+        case 9: return "October"
+        case 10: return "November"
+        case 11: return "December"
+
+        }
+    }
 
     Rectangle{
         id: _rectangleBackground
@@ -39,8 +73,8 @@ Item {
                 spacing: 20
                 clip: true
                 model: CalendarModel{
-                    from: new Date(2015,0,1)
-                    to: new Date( 2015,1,22)
+                    from: new Date()
+                    to: new Date(today.setDate(today.getDate() + 30))
                 }
                 delegate: ColumnLayout{
                     width:_listViewCalendarContainer.width
@@ -82,14 +116,56 @@ Item {
                     }
                     MonthGrid{
                         id: _monthGrid
+
+                        signal dateSelected(var date)
+
                         locale: Qt.locale("en_US")
                         month: model.month
                         year: model.year
                         Layout.fillWidth: true
                         delegate: MonthDateDelegate{
+                            id: _monthDateDelegate
                             dayLabel: model.day
-                            opacity: model.month === control.month ? 1 : 0.3
+                            state: evaluateState()
+                            onClicked: {
+                                _monthGrid.dateSelected(model.date)
+                                root.datePicked(model.date)
+                            }
+
+                            Connections{
+                                target: _monthGrid
+                                ignoreUnknownSignals: true
+
+                                function onDateSelected(date){
+
+                                    if(model.date !== date && _monthDateDelegate.state === "selected" && _monthDateDelegate.state !== "disabled"){
+                                        _monthDateDelegate.state = "normal"
+                                    }
+                                }
+                            }
+
+                            Connections{
+                                target: root
+                                ignoreUnknownSignals: true
+
+                                function onDateHasAppointments(date){
+
+                                    if(compareDates(model.date,date) && _monthDateDelegate.state !== "disabled"){
+
+                                        _monthDateDelegate.state = "booked"
+                                    }
+                                }
+                            }
+
+                            function evaluateState(){
+                                if(model.month !== _monthGrid.month || model.date < new Date()){
+                                    return "disabled"
+                                }
+                                return "normal"
+                            }
                         }
+
+
                     }
                 }
             }
@@ -97,5 +173,15 @@ Item {
 
 
     }
+
+
+
+    function compareDates(date1,date2){
+
+        return date1.getDate() === date2.getDate() && date1.getMonth() === date2.getMonth() && date1.getYear() === date2.getYear()
+    }
+
+
+
 
 }

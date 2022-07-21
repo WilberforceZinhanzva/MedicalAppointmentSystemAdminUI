@@ -5,7 +5,7 @@ import Qt5Compat.GraphicalEffects
 
 Item {
     id: root
-    width: 300
+    width: 270
 
     Rectangle{
         id: _rectangleBackground
@@ -31,6 +31,25 @@ Item {
                     height: 70
                     radius: width/2
                     color: Theme.baseColor
+
+                    Image{
+                        id: _imageAccountImage
+                        anchors.fill: parent
+                        source: "qrc:/assets/images/account_image.png"
+                        layer.enabled: true
+                        layer.effect: OpacityMask{
+                            maskSource: Item{
+                                width: _imageAccountImage.width
+                                height: width
+                                Rectangle{
+                                    anchors.centerIn: parent
+                                    width: parent.width
+                                    height: parent.width
+                                    radius: width/2
+                                }
+                            }
+                        }
+                    }
 
 
                 }
@@ -63,16 +82,22 @@ Item {
                 Layout.topMargin: 10
             }
 
-            Text{
-                id: _textMenuTitle
-                text: "MENU"
-                font.pixelSize: 11
-                font.bold: true
-                color: "gray"
-                Layout.topMargin: 15
-                Layout.alignment: Qt.AlignLeft
+            MenuButton{
+                id: _menuButtonAppointments
+                menuLabel: "Appointments"
+                menuIcon: "qrc:/assets/icons/book-appointments.svg"
+                Layout.topMargin: 25
             }
-
+            MenuButton{
+                id: _menuButtonDoctors
+                menuLabel: "Doctors"
+                menuIcon: "qrc:/assets/icons/doctor.svg"
+            }
+            MenuButton{
+                id: _menuButtonSettings
+                menuLabel: "Settings"
+                menuIcon: "qrc:/assets/icons/settings.svg"
+            }
 
 
             Item{

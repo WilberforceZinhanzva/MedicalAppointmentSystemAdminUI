@@ -52,6 +52,15 @@ int AppointmentDetailsListModel::rowCount(const QModelIndex &parent) const
     return m_appointmentDetails.size();
 }
 
+QString formatTime(const QTime& time){
+    int hour = time.hour();
+    int minute = time.minute();
+    QString timeOfDay = hour <= 12 ? "AM":"PM";
+    QString resolvedHour= hour < 10 ? QString("0%1").arg(hour) : QString("%1").arg(hour);
+    QString resolvedMinute = minute < 10 ? QString("0%1").arg(minute): QString("%1").arg(minute);
+    return QString("%1:%2 %3").arg(resolvedHour).arg(resolvedMinute).arg(timeOfDay);
+}
+
 QVariant AppointmentDetailsListModel::data(const QModelIndex &index, int role) const
 {
     int row = index.row();
@@ -68,9 +77,11 @@ QVariant AppointmentDetailsListModel::data(const QModelIndex &index, int role) c
     case SelectedRole:
         return m_appointmentDetails.at(row)->selected;
     case TimeRole:
-        return m_appointmentDetails.at(row)->time;
+        return formatTime(m_appointmentDetails.at(row)->time);
     case IsMorningRole:
         return m_appointmentDetails.at(row)->isMorning;
+    case EndTimeRole:
+        return formatTime(m_appointmentDetails.at(row)->endTime);
     }
     return QVariant();
 }
@@ -85,5 +96,6 @@ QHash<int, QByteArray> AppointmentDetailsListModel::roleNames() const
     names.insert(SelectedRole, "Selected");
     names.insert(TimeRole, "Time");
     names.insert(IsMorningRole,"IsMorning");
+    names.insert(EndTimeRole,"EndTime");
     return names;
 }
